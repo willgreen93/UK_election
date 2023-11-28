@@ -11,36 +11,50 @@
 import streamlit as st
 import pydeck as pdk
 import json
+import pandas as pd
+import random
+import geopandas as gpd
 
-# Load your HexJSON data (replace 'your_hexjson_file.json' with your actual file)
-with open("interface/uk-constituencies-2023.json", "r") as file:
-    hexjson_data = json.load(file)
-st.write(hexjson_data)  # debugging tool
 
-# Load HexJSON layer
-hex_layer = pdk.Layer(
+with open("interface/England.geojson", "r") as file:
+    data = json.load(file)
+
+gdf = gpd.GeoDataFrame.from_features(data["features"])
+coordinates = gdf.get_coordinates()
+coordinates.columns = ["lng", "lat"]
+centroids = gdf.centroid.to_frame()
+df = pd.DataFrame()
+df["lng"] = gdf.centroid.x
+df["lat"] = gdf.centroid.y
+
+layer = pdk.Layer(
     "HexagonLayer",
-    data=hexjson_data,
-    get_position="[r, q]",
-    auto_highlight=True,
-    elevation_scale=50,
+    df,
+    get_position=["lng", "lat"],
+    elevation_scale=0,
     pickable=True,
-    extruded=True,
+    elevation_range=[0, 3000],
+    filled=True,
+    coverage=10,
 )
-
-# Set the initial view location (adjust as needed)
 view_state = pdk.ViewState(
-    longitude=-3.2766,
-    latitude=54.7024,
-    zoom=4.5,  # You may need to adjust the zoom level based on your preference
-    min_zoom=0,
+    longitude=-1.415,
+    latitude=52.2323,
+    zoom=5,
+    min_zoom=5,
     max_zoom=15,
     pitch=0,
-    bearing=-27.36,
+    bearing=0,
 )
 
-# Create the PyDeck deck
-deck = pdk.Deck(layers=[hex_layer], initial_view_state=view_state)
+# Render without the map
+r = pdk.Deck(
+    layers=[layer],
+    initial_view_state=view_state,
+    map_style="",
+    map_provider="",
+    api_keys=None,
+)
 
 # Streamlit app layout
 st.title("UK, hun?")
@@ -62,4 +76,4 @@ st.sidebar.text(f"Current Conservative Rating: {conservative_rating}%")
 st.sidebar.text(f"Current Labor Party Rating: {labor_party_rating}%")
 
 # Display the PyDeck chart using st.pydeck_chart
-st.pydeck_chart(deck)
+st.pydeck_chart(r)
