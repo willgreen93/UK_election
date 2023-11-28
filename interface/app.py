@@ -1,4 +1,4 @@
-# find a place to insert the input as a clean dataframe
+# find a place to insert the Y as a clean dataframe
 # connect the two sliders with the column we want
 # add the map >> use an API map or something from google
 # label each hexagon with the colors blue or red for each constituency
@@ -9,15 +9,43 @@
 
 
 import streamlit as st
+import pydeck as pdk
 
-# Set the title of the app
+# Load your HexJSON data (replace 'your_hexjson_file.json' with your actual file)
+hexjson_data = "interface/uk-constituencies-2023"
+
+# Load HexJSON layer
+hex_layer = pdk.Layer(
+    "HexagonLayer",
+    data=hexjson_data,
+    get_position="[longitude, latitude]",
+    auto_highlight=True,
+    elevation_scale=50,
+    pickable=True,
+    extruded=True,
+)
+
+# Set the initial view location (adjust as needed)
+view_state = pdk.ViewState(
+    longitude=-3.2766,
+    latitude=54.7024,
+    zoom=4.5,  # You may need to adjust the zoom level based on your preference
+    min_zoom=0,
+    max_zoom=15,
+    pitch=0,
+    bearing=-27.36,
+)
+
+# Create the PyDeck deck
+deck = pdk.Deck(layers=[hex_layer], initial_view_state=view_state)
+
+# Streamlit app layout
 st.title("UK, hun?")
 
 # Create a placeholder for the map on the left side
-st.sidebar.header("Interactive Hex Map (Placeholder)")
-# Add a comment to describe that the map will be added later
+st.sidebar.header("Interactive Hex Map")
 
-# Create sliders for conservative and labor party polling/approval ratings on the right side
+# Create sliders for conservative and labor party approval ratings on the right side
 st.sidebar.header("Sliders for Polling/Approval Ratings")
 conservative_rating = st.sidebar.slider(
     "Conservative Rating", min_value=0, max_value=100, value=50
@@ -30,20 +58,5 @@ labor_party_rating = st.sidebar.slider(
 st.sidebar.text(f"Current Conservative Rating: {conservative_rating}%")
 st.sidebar.text(f"Current Labor Party Rating: {labor_party_rating}%")
 
-# You can use the map placeholder and slider values to update your model and display results accordingly
-# For now, let's just display a message indicating that the map will be added later
-st.text("Map showing predictions of voting outcomes will be added later.")
-
-# Additional content or processing based on the map and slider values can be added here
-
-
-st.markdown(
-    body="""
-    <iframe
-        src="https://open-innovations.org/projects/hexmaps/builder?maps/constituencies.hexjson"
-        height="800"
-        style="width:100%;border:none;"
-    ></iframe>
-""",
-    unsafe_allow_html=True,
-)
+# Display the PyDeck chart using st.pydeck_chart
+st.pydeck_chart(deck)
