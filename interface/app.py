@@ -10,15 +10,18 @@
 
 import streamlit as st
 import pydeck as pdk
+import json
 
 # Load your HexJSON data (replace 'your_hexjson_file.json' with your actual file)
-hexjson_data = "interface/uk-constituencies-2023"
+with open("interface/uk-constituencies-2023.json", "r") as file:
+    hexjson_data = json.load(file)
+st.write(hexjson_data)  # debugging tool
 
 # Load HexJSON layer
 hex_layer = pdk.Layer(
     "HexagonLayer",
     data=hexjson_data,
-    get_position="[longitude, latitude]",
+    get_position="[r, q]",
     auto_highlight=True,
     elevation_scale=50,
     pickable=True,
