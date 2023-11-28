@@ -1,9 +1,9 @@
-#find a place to insert the input as a clean dataframe
-#connect the two sliders with the column we want
-#add the map >> use an API map or something from google
-#label each hexagon with the colors blue or red for each constituency
+# find a place to insert the input as a clean dataframe
+# connect the two sliders with the column we want
+# add the map >> use an API map or something from google
+# label each hexagon with the colors blue or red for each constituency
 
-#requirements
+# requirements
 # - static map with all the divisions
 # - SVG maybe from the
 
@@ -19,8 +19,12 @@ st.sidebar.header("Interactive Hex Map (Placeholder)")
 
 # Create sliders for conservative and labor party polling/approval ratings on the right side
 st.sidebar.header("Sliders for Polling/Approval Ratings")
-conservative_rating = st.sidebar.slider("Conservative Rating", min_value=0, max_value=100, value=50)
-labor_party_rating = st.sidebar.slider("Labor Party Rating", min_value=0, max_value=100, value=50)
+conservative_rating = st.sidebar.slider(
+    "Conservative Rating", min_value=0, max_value=100, value=50
+)
+labor_party_rating = st.sidebar.slider(
+    "Labor Party Rating", min_value=0, max_value=100, value=50
+)
 
 # Display the current values of the sliders
 st.sidebar.text(f"Current Conservative Rating: {conservative_rating}%")
@@ -31,3 +35,15 @@ st.sidebar.text(f"Current Labor Party Rating: {labor_party_rating}%")
 st.text("Map showing predictions of voting outcomes will be added later.")
 
 # Additional content or processing based on the map and slider values can be added here
+
+
+st.markdown(
+    body="""
+    <iframe
+        src="https://open-innovations.org/projects/hexmaps/builder?maps/constituencies.hexjson"
+        height="800"
+        style="width:100%;border:none;"
+    ></iframe>
+""",
+    unsafe_allow_html=True,
+)
