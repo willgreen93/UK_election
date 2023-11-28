@@ -33,9 +33,10 @@ layer = pdk.Layer(
     get_position=["lng", "lat"],
     elevation_scale=0,
     pickable=True,
-    elevation_range=[0, 3000],
+    elevation_range=[0, 1000],
     filled=True,
-    coverage=10,
+    coverage=20,
+    radius=500,
 )
 view_state = pdk.ViewState(
     longitude=-1.415,
