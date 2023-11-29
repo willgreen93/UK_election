@@ -1,4 +1,4 @@
 pandas
 numpy
 ipykernel
-
+google-cloud-storage
