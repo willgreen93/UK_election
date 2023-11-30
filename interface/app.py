@@ -16,7 +16,7 @@ import random
 import geopandas as gpd
 
 
-with open("interface/England.geojson", "r") as file:
+with open("interface/json_files/England.geojson", "r") as file:
     data = json.load(file)
 
 gdf = gpd.GeoDataFrame.from_features(data["features"])

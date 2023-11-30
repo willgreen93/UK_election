@@ -38,7 +38,7 @@ import geopandas as gpd
 import json
 import streamlit as st
 
-with open("interface/England.geojson", "r") as file:
+with open("json_files/England.geojson", "r") as file:
     data = json.load(file)
 
 gdf = gpd.GeoDataFrame.from_features(data["features"])
@@ -49,26 +49,37 @@ df = pd.DataFrame()
 df["lng"] = gdf.centroid.x
 df["lat"] = gdf.centroid.y
 
-layer = pdk.Layer(
-    "HexagonLayer",
-    df,
-    get_position=["lng", "lat"],
-    elevation_scale=0,
-    pickable=True,
-    elevation_range=[0, 3000],
-    filled=True,
-    coverage=10,
+
+fig = ff.create_hexbin_mapbox(
+    data_frame=df,
+    lat="lat",
+    lon="lng",  # color="randNumCol", #color_discrete_map =["red", "blue", "grey"],
+    nx_hexagon=20,
+    opacity=0.5,
+    labels={"color": "color label"},
+    min_count=1,
 )
-view_state = pdk.ViewState(
-    longitude=-1.415,
-    latitude=52.2323,
-    zoom=5,
-    min_zoom=5,
-    max_zoom=15,
-    pitch=0,
-    bearing=0,
-)
+fig.show()
+# layer = pdk.Layer(
+#     "HexagonLayer",
+#     df,
+#     get_position=["lng", "lat"],
+#     elevation_scale=0,
+#     pickable=True,
+#     elevation_range=[0, 3000],
+#     filled=True,
+#     coverage=10,
+# )
+# view_state = pdk.ViewState(
+#     longitude=-1.415,
+#     latitude=52.2323,
+#     zoom=5,
+#     min_zoom=5,
+#     max_zoom=15,
+#     pitch=0,
+#     bearing=0,
+# )
 
 # Render without the map
-r = pdk.Deck(layers=[layer], initial_view_state=view_state, map_style="")
-st.pydeck_chart(r)
+# r = pdk.Deck(layers=[layer], initial_view_state=view_state, map_style="")
+# st.pydeck_chart(r)
