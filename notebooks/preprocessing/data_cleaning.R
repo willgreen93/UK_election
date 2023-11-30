@@ -9,10 +9,10 @@ living = read_csv("2011_2021_census_data_livingstatus.csv")
 ethnicity = read_csv("2011_2021_census_data_ethnicity.csv")
 
 age_cleaned = age %>% dplyr::select(c("Age group", "ConstituencyName", "ONSConstID", "RegionName", "Date", "Const%")) %>%
-  magrittr::set_colnames(c("Age", "Constituency", "ONSConstID", "RegionName", "Year", "Percentage")) %>% 
+  magrittr::set_colnames(c("Age", "Constituency", "ONSConstID", "RegionName", "Year", "Percentage")) %>%
   mutate(Year = as.integer(Year)) %>%
   mutate(Percentage = as.numeric(substr(Percentage,1,nchar(Percentage)-1))/100) %>%
-  tidyr::spread(Age, Percentage) 
+  tidyr::spread(Age, Percentage)
 
 living_cleaned = living %>% dplyr::select(c("ConstituencyName", "ONSConstID", "groups", "con_num", "con_2011_num")) %>%
   magrittr::set_colnames(c("Constituency", "ONSConstID", "group", "2011", "2021")) %>%
@@ -32,33 +32,38 @@ ethnicity_cleaned = ethnicity %>% dplyr::select("ConstituencyName", "ONSConstID"
 
 interpolateDataFrame <- function(df, year_start, year_end, start_col=4){
   years_sequence <- seq(year_start, year_end)
-  
+
   for(cons in unique(df$Constituency)){
     df_filtered = df %>% filter(Constituency==cons)
-    
-    interpolated_df <- data.frame(Constituency = cons, 
+
+    interpolated_df <- data.frame(Constituency = cons,
                ONSConstID = df_filtered$ONSConstID[1],
                year = years_sequence)
-    
+
     for (col in start_col:ncol(df_filtered)) {
       interpolated_values <- approx(df_filtered$Year, df_filtered[[col]], years_sequence, rule=2)$y
       interpolated_df[colnames(df_filtered)[col]] <- interpolated_values
     }
-    
+
     if (cons==unique(df$Constituency)[1]) interpolated_df_hold <- interpolated_df
     else interpolated_df_hold <- rbind(interpolated_df_hold, interpolated_df)
   }
-  
+
   return(interpolated_df_hold)
 }
 
+# Interpolate stuff
 age_interpolated <- interpolateDataFrame(df=age_cleaned, year_start=2010, year_end=2021, start_col=5)
 living_interpolated <- interpolateDataFrame(living_cleaned, 2010, 2021)
 ethnicity_interpolated <- interpolateDataFrame(ethnicity_cleaned, 2010, 2021)
 
+# Combine everything
 combined = left_join(living_interpolated, age_interpolated, by=c("Constituency", "ONSConstID", "year")) %>%
   left_join(., ethnicity_interpolated, by=c("Constituency", "ONSConstID", "year"))
 
+
+
+# Polling data
 polling = read_csv("monthly_polling_data.csv")
 
 library(zoo)
@@ -72,7 +77,7 @@ polling_cleaned = polling %>%
   rowwise() %>%
   mutate(next_election=lubridate::year(election_dates[which(election_dates>Month)][1])) %>%
   tidyr::gather("Party", "Score", 3:5) %>%
-  group_by(Party, next_election) 
+  group_by(Party, next_election)
 
 summary1 = polling_cleaned %>%
   filter(is.na(Month)==F) %>%
@@ -90,6 +95,12 @@ polling_summary = left_join(summary1, summary2, by=c("Party", "next_election")) 
   select(-metric, -Party) %>%
   tidyr::spread(concat, value) %>%
   dplyr::rename(election=next_election)
+
+
+
+
+
+
 
 X_init = combined %>% filter(year %in% unique(polling_summary$election)) %>%
   left_join(., polling_summary, by=c("year" = "election"))
