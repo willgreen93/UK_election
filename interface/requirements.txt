@@ -1,6 +1,16 @@
+#Altair App requirements
 streamlit
+altair
+altair_viewer
 pydeck
-json
-pandas
+
+
+
+#Data requirements
 random
 geopandas
+numpy
+pandas
+json
+
+#Other requirements

@@ -16,7 +16,7 @@ import random
 import geopandas as gpd
 
 
-with open("interface/data/England.geojson", "r") as file:
+with open("data/England.geojson", "r") as file:
     data = json.load(file)
 
 gdf = gpd.GeoDataFrame.from_features(data["features"])
@@ -36,6 +36,7 @@ layer = pdk.Layer(
     elevation_range=[0, 1000],
     filled=True,
     coverage=20,
+    mapbox_style="white-bg",
     radius=500,
 )
 view_state = pdk.ViewState(
