@@ -15,6 +15,7 @@ from io import BytesIO
 ####################################################################
 ############_________Sliders sidebar goes here________##############
 
+col1, col2 = st.columns(2)
 
 # Title for left sidebar
 st.sidebar.subheader("Pretty Little Sliders")
@@ -59,8 +60,12 @@ data_source = fetch_data_from_api(api_url, params=params, headers=None)
 preds = get_election_data(data_source)
 df = merge_dataframes(map_df, preds)
 
+party_counts = df["winning_party"].value_counts()
+max_winning_party = party_counts.idxmax()
+
 
 # Display the current values of the sliders
+st.sidebar.subheader(f"Party with most seats: {max_winning_party}")
 st.sidebar.text(f"Current Conservative Rating: {conservative_rating}%")
 st.sidebar.text(f"Current Labor Party Rating: {labor_party_rating}%")
 st.sidebar.text(f"Current Lib Dem Rating: {libdem_party_rating}%")
@@ -97,7 +102,7 @@ bar_ch = (
         color=colours_obj.legend(None),
     )
     .properties(
-        title="Total Count of Each Incumbent Party",
+        title="Constituencies Won",
         width=400,
     )
 )
@@ -108,7 +113,6 @@ bar_ch = (
 
 ######################################################
 
-col1, col2 = st.columns(2)
 
 with col1:
     st.header("UK, hun?")
