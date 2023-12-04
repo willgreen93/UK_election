@@ -75,37 +75,50 @@ st.sidebar.text(f"Current Chaos Rating: {let_chaos_reign}%")
 
 ####################################################################
 #############_________Map gets displayed here________###############
+
+
 map = (
     alt.Chart(df)
     .mark_square()
     .encode(
         x=alt.X("q").scale(zero=False).axis(None),
         y=alt.Y("r").scale(zero=False).axis(None),
-        color=colours_obj.legend(
-            title="Incumbent Party",
-        ),
+        color=colours_obj.legend(title="Incumbent Party", orient="bottom"),
         size=alt.value(65),
         tooltip=["n:N"],
     )
-    .properties(width=700, height=650)
+    .properties(width=500, height=650)
     .configure_axis(grid=False)
     .configure_view(strokeWidth=0)
 )
+
 
 bar_ch = (
     alt.Chart(df)
     .mark_bar()
     .encode(
-        x=alt.X("count():Q", title="Count"),
-        y=alt.Y("incumbent_party:N", title="Incumbent Party"),
-        tooltip=[alt.Tooltip("count()", title="Count")],
-        color="incumbent_party:N",
+        x=alt.X("count():Q", title="Total Count"),
+        y=alt.Y("incumbent_party:N", title="Incumbent Party", axis=None),
+        tooltip=[alt.Tooltip("count()")],
+        color=colours_obj.legend(None),
     )
     .properties(
         title="Total Count of Each Incumbent Party",
-        width=400,  # Adjust the width as needed
+        width=400,
     )
 )
 
-st.altair_chart(map)
-st.altair_chart(bar_ch)
+
+# st.altair_chart(map)
+# st.altair_chart(bar_ch)
+
+######################################################
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.header("UK, hun?")
+    st.altair_chart(map)
+
+with col2:
+    st.altair_chart(bar_ch)
