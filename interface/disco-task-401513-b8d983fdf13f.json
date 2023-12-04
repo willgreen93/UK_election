@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "disco-task-401513",
+  "private_key_id": "b8d983fdf13f50fa45b6fe6f2024b54e2d38f38c",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCtFQBBPTUpLk6W\nh819NdM38SRBy9acuprJJ9RItdSDDOwobdFHf8XlX6+mGLhxrFeHdH3etwwDOLBH\nAQDO4I3VIEXMC+qINSnzNdNPeVPRgom8XNN4VWXYXS4dusFVWbOejn4lwwvZsMx9\nfholthEzDM+xqwibhhAew1V0O0gLlbInEBfAKNVMzqiV0xJhZyEQhN9mNmiSKz19\n+l308S1ebksQ3OprSAaowU7YKtLIaA7e1gYVI2YuOJ0+ugkEj+S6H92Ui2CqM8Nf\n4UBkRXdkfQY8GO/TSz0Rg3M1u2TBEKz5zEqnxiXy9N9Afp9QZD4EyjXTw8dOwUO/\nL6lTSk/7AgMBAAECggEARCnrKcZDM26rQJlHEjKqdnOfhdITOTI8V1A6SFBj2yCx\nuNJXA0OM2mKuuEkwCoSHDC+Siq2oK3Sd57i7ar4A3ZiSJGPk/7OAS+o8yCXOHsq8\nF9Su68smCunXiZnNHiHvnVgc0h5Ygmkgf6O0BHoJmANJoHztLOLFYngnJVlbbEPn\n65eUqT20xdwWrFmqJqNZQP+XNSlFZRDlPUU67TsVNG2eKSyRGko0hJxC01gkBnkS\n/1q1ZuBTFd3kRkwEvmgdS4u5uZd5aLHJ+CBWlK+r1hry9d0Bs31Z2jdsvhw/ai8W\nRLMJuiyWTPaFpbxc47xDA4szbnDcAk5EfztNu7S8YQKBgQDhsUuBaHHlEnzgOYWk\nyRB12/kJp0odicPvuMnxTT004V+f4pjD1u0vJHMrkzTHKqTw1D7H572UjJf1jUA6\nc6jVXYyo1V57ZN+ZwcfBv44RjK8Nl4fIQiCzxENRm8/7s3KXnKVqo8ji1KhWopsO\nZecqLMVHtV9VV8es36+Bm1+AMwKBgQDEUxjpuvoHJOgQhjIHIe9RUbLaUhxfhXmC\n6aU5bkERoI7PxcvBa7cTwSiDFlqRLK3HFyGATJCWoidKCiVAB/ACc2/xTowaxTAc\nldgftkADDjryWKuAtflEXxx5YsMbEY9mPhf0BPVNf2oBe5ICQ+I9e/PNCKDED0Xb\nDwhePbcJGQKBgQCfE6lFqEmHDZXpMYIqWPH6MLcC/9/0m/L4F8Z3B1sZ17Tf7AaD\nGw2IyedHknWD4GHrwZ4SpxvwBXziPdJEoNsisNKA+guja8FTDcvvm0XWxtNoACNb\nmoiUTMSqU+mv3pbpmCbb2F+yyfNxRSGHb3oVNwNCfOuaKsn55pw8/Te+EwKBgEUo\n/NrBynif0LyZeaA3nSXpgPcV+/bOf2rVwiXEKFn8VLLu/ANsXbcw0YO0aT1BHwrG\npD+dOUZHY03a2xp+cVd7sRCx2ftIQdWgF928BzrMVYmwIOKbuG8UjmRYnWC4w+qB\nr1CAOqYNX5ucG2h+34FHXDB7fJ70vmgYGJuSZBtpAoGAXmiqaZSM4Y2Bvh+3vxa0\n4AY46W5aH55ldN2U/ewgOSoMvkF/21l8WYGPBrsEpyI9Opv+xTdRTAYUtMulq7Jn\ns0Pd84lc7yWBUWx0o+spDmVHd58WN2qn2Zc6sLkHzgIku6PUdL8PmAZGiUYv26ig\ntaeVMn/oBYKz+BiuGJEQjfU=\n-----END PRIVATE KEY-----\n",
+  "client_email": "uk-election@disco-task-401513.iam.gserviceaccount.com",
+  "client_id": "105617111553318125408",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/uk-election%40disco-task-401513.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

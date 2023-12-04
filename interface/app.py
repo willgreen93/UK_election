@@ -5,13 +5,29 @@ import geopandas as gpd
 import numpy as np
 from data_to_chart_prep import get_basemap, get_election_data, merge_dataframes
 from params import *
+from io import BytesIO
 
 #############################################################################
 ###########################__Data goes here___###############################
 ######################____BASE___MAP___DATA____##############################
 
-map_df = get_basemap(url)
-preds_df = get_election_data(data_source)
+client = storage.Client()
+
+# Get the bucket and file
+bucket = client.bucket(bucket_name)
+blob = bucket.blob(url)
+blob2 = bucket.blob(data_source)
+
+# Download the file's content
+hex_json = blob.download_as_text()
+preds_csv = blob2.download_as_text()
+
+# Read the data using pandas
+hexmap = pd.read_json(BytesIO(hex_json))
+preds = pd.read_json(BytesIO(preds_csv))
+
+map_df = get_basemap(hexmap)
+preds_df = get_election_data(preds)
 df = merge_dataframes(map_df, preds_df)
 
 ####################################################################
