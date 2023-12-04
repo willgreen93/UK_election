@@ -1,8 +1,6 @@
 #Altair App requirements
 streamlit
 altair
-pydeck
-
 
 
 #Data requirements
