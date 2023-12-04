@@ -9,43 +9,47 @@ import random
 import geopandas as gpd
 import numpy as np
 
-#######################################
-###########Data goes here##############
+####################################################################
+########################__Data goes here___#########################
+###################____BASE___MAP___DATA____########################
 
 alt_data = pd.read_json(
-    "/home/asia/code/willgreen93/UK_election/interface/data/uk-constituencies-2023.json"
+    "/home/asia/code/willgreen93/UK_election/interface/data/uk-constituencies-2019-BBC.hexjson"
 )
 alt_df = pd.DataFrame(alt_data)
-##Data Setup Here##
-alt_df[["n", "r", "q", "region", "colour"]] = alt_df["hexes"].apply(
-    lambda x: pd.Series(
-        [x.get("n"), x.get("r"), x.get("q"), x.get("region"), x.get("colour")]
-    )
+
+alt_df[["n", "r", "q", "region"]] = alt_df["hexes"].apply(
+    lambda x: pd.Series([x.get("n"), x.get("r"), x.get("q"), x.get("region")])
 )
 
-##this should be replaced when I create the pipeline##
-##SAMPLE ONLY randomness, can be deleted when we have the predictions##
-alt_df["votes"] = alt_df.apply(lambda x: np.random.randint(0, 4), axis=1)
+new_df = alt_df.rename_axis("constituency_id").reset_index().drop(columns=["hexes"])
+
+####################################################################
+########################__Data goes here___#########################
+###################____ELECTION_____DATA____########################
+
+results_2019 = pd.read_csv(
+    "/home/asia/code/willgreen93/UK_election/interface/data/elec_data_2019.csv"
+)
 
 
-##Assigning Colors to each party##
-parties = ["Conservative", "Labour", "Lib Dem", "Other"]
+basic_df = results_2019[
+    ["constituency_id", "constituency", "country", "incumbent_party"]
+]
+
+df = pd.merge(basic_df, new_df, on="constituency_id", how="left")
+
+##############_________Assigning Colors to each party________#############
+parties = ["conservative", "labour", "liberal_democrats", "other_parties"]
 party_colours = ["#F78DA7", "blue", "orange", "lightgrey"]
-
-
-alt_df["Party"] = alt_df["votes"].apply(
-    lambda x: parties[x] if x < len(parties) else "Other"
+colours_obj = alt.Color(
+    "incumbent_party:N", scale=alt.Scale(domain=parties, range=party_colours)
 )
 
-colours_obj = alt.Color("Party:N", scale=alt.Scale(domain=parties, range=party_colours))
-### selector not working SELECTOR SHOULD GO HERE HUHUHUHU##
-# selector = alt.selection_point(empty=True, fields=['Party'])
 
-# colours_condition = alt.condition(colours_obj, alt.value("lightgray"))  # selector,
+#############################################
+####___Sliders sidebar goes here___##########
 
-
-#######################################
-####Sliders sidebar goes here##########
 # Streamlit app layout
 st.title("UK, hun?")
 
@@ -71,19 +75,17 @@ st.sidebar.text(f"Current Labor Party Rating: {labor_party_rating}%")
 st.sidebar.text(f"Current Chaos Rating: {let_chaos_reign}%")
 
 
-#######################################
-###########Map goes here###############
+##########################################
+###########__Map goes here__###############
 st.altair_chart(
-    alt.Chart(alt_df)
+    alt.Chart(df)
     .mark_square()
     # .mark_circle()
     .encode(
-        # x="q", changed this to alt.X
         x=alt.X("q").scale(zero=False).axis(None),
-        # y="r",
         y=alt.Y("r").scale(zero=False).axis(None),
         color=colours_obj,
-        size=alt.value(90),
+        size=alt.value(70),
         tooltip=["n:N"],
     )
     .properties(width=550, height=650)
