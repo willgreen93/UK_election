@@ -31,6 +31,12 @@ map_df = get_basemap(url)
 preds_df = get_election_data(data_source)
 df = merge_dataframes(map_df, preds_df)
 
+conser = (df["incumbent_party"] == "conservative").sum()
+labour = (df["incumbent_party"] == "labour").sum()
+other_part = (df["incumbent_party"] == "other_parties").sum()
+lib_dem = (df["incumbent_party"] == "liberal_democrats").sum()
+
+
 ####################################################################
 ############_________Sliders sidebar goes here________##############
 
@@ -69,10 +75,9 @@ st.sidebar.text(f"Current Chaos Rating: {let_chaos_reign}%")
 
 ####################################################################
 #############_________Map gets displayed here________###############
-st.altair_chart(
+map = (
     alt.Chart(df)
     .mark_square()
-    # .mark_circle()
     .encode(
         x=alt.X("q").scale(zero=False).axis(None),
         y=alt.Y("r").scale(zero=False).axis(None),
@@ -86,3 +91,21 @@ st.altair_chart(
     .configure_axis(grid=False)
     .configure_view(strokeWidth=0)
 )
+
+bar_ch = (
+    alt.Chart(df)
+    .mark_bar()
+    .encode(
+        x=alt.X("count():Q", title="Count"),
+        y=alt.Y("incumbent_party:N", title="Incumbent Party"),
+        tooltip=[alt.Tooltip("count()", title="Count")],
+        color="incumbent_party:N",
+    )
+    .properties(
+        title="Total Count of Each Incumbent Party",
+        width=400,  # Adjust the width as needed
+    )
+)
+
+st.altair_chart(map)
+st.altair_chart(bar_ch)
