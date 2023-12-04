@@ -1,7 +1,6 @@
 #Altair App requirements
 streamlit
 altair
-altair_viewer
 pydeck
 
 
