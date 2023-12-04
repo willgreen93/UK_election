@@ -67,24 +67,28 @@ def main():
     )
 
     ### JOIN ALL THE DATAFRAMES TOGETHER ###
-    final_df = pd.merge(
+    preprocessed_final_df = pd.merge(
         preprocessed_census_df,
         elections_polling_df,
         on=["constituency_id", "year"],
         how="inner",
     )
-    final_df.rename(columns={"constituency_name_x": "constituency_name"}, inplace=True)
-    final_df.drop(columns=["constituency_name_y"], inplace=True)
+    preprocessed_final_df.rename(
+        columns={"constituency_name_x": "constituency_name"}, inplace=True
+    )
+    preprocessed_final_df.drop(columns=["constituency_name_y"], inplace=True)
 
     # Step 4: Save the preprocessed DF as CSV
-    ## This is just for courtesy and checking, not needed for the pipeline
-    final_df.to_csv(os.path.join(LOCAL_DATA_PATH, "final_df.csv"), index=False)
+    ## This is just for courtesy and to check data is correct, not beacuse is needed to train the model
+    preprocessed_final_df.to_csv(
+        os.path.join(LOCAL_DATA_PATH, "preprocessed_final_df.csv"), index=False
+    )
 
     # Train the model
 
     # Evaluate the model
 
-    return final_df
+    return preprocessed_final_df
 
 
 if __name__ == "__main__":
