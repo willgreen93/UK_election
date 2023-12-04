@@ -50,16 +50,22 @@ st.sidebar.subheader("Pretty Little Sliders")
 st.sidebar.text("Move the sliders to change \nthe polling percentages on the map")
 
 conservative_rating = st.sidebar.slider(
-    "Conservative Rating", min_value=0, max_value=100, value=50
+    "Conservative Rating", min_value=0, max_value=100, value=0
 )
 labor_party_rating = st.sidebar.slider(
-    "Labor Party Rating", min_value=0, max_value=100, value=50
+    "Labor Party Rating", min_value=0, max_value=100 - conservative_rating, value=0
 )
 libdem_party_rating = st.sidebar.slider(
-    "Lib Dem Rating", min_value=0, max_value=100, value=50
+    "Lib Dem Rating",
+    min_value=0,
+    max_value=100 - (labor_party_rating + conservative_rating),
+    value=0,
 )
 other_party_rating = st.sidebar.slider(
-    "Other Parties", min_value=0, max_value=100, value=50
+    "Other Parties",
+    min_value=0,
+    max_value=100 - (labor_party_rating + conservative_rating + libdem_party_rating),
+    value=0,
 )
 let_chaos_reign = st.sidebar.slider(
     "Let Chaos Reign", min_value=0, max_value=100, value=50
