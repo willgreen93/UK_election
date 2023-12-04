@@ -1,0 +1,10 @@
+# Add here the libraries you need to install
+
+pandas
+numpy
+ipykernel
+scipy
+google-cloud-storage
+scikit-learn
+fastapi
+uvicorn
