@@ -1,6 +1,7 @@
 import pandas as pd
 import geopandas as gpd
 import numpy as np
+import requests
 
 
 def get_basemap(url):
@@ -20,16 +21,25 @@ def get_basemap(url):
     return new_df
 
 
+def fetch_data_from_api(api_url, params=None, headers=None):
+    response = requests.get(api_url, params=params, headers=headers)
+
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return None
+
+
 def get_election_data(data_source):
     """
     This function takes the url of the election data and returns a dataframe
     with the election data. The dataframe has the following columns:
     constituency_id, constituency, country, incumbent_party
     """
-    preds = pd.read_csv(data_source)
-    preds_df = preds[["constituency_id", "constituency", "country", "incumbent_party"]]
+    preds = pd.DataFrame(data_source)
+    # preds_df = preds[["constituency_id", "winning_party"]]
 
-    return preds_df
+    return preds
 
 
 def merge_dataframes(basic_df, new_df):

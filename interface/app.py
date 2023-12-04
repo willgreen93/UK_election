@@ -3,45 +3,18 @@ import streamlit as st
 import pandas as pd
 import geopandas as gpd
 import numpy as np
-from data_to_chart_prep import get_basemap, get_election_data, merge_dataframes
+from data_to_chart_prep import (
+    get_basemap,
+    get_election_data,
+    merge_dataframes,
+    fetch_data_from_api,
+)
 from params import *
 from io import BytesIO
-
-#############################################################################
-###########################__Data goes here___###############################
-######################____BASE___MAP___DATA____##############################
-
-# client = storage.Client()
-
-# # Get the bucket and file
-# bucket = client.bucket(bucket_name)
-# blob = bucket.blob(url)
-# blob2 = bucket.blob(data_source)
-
-# # Download the file's content
-# hex_json = blob.download_as_text()
-# preds_csv = blob2.download_as_text()
-
-# # Read the data using pandas
-# hexmap = pd.read_json(BytesIO(hex_json))
-# preds = pd.read_json(BytesIO(preds_csv))
-
-
-map_df = get_basemap(url)
-preds_df = get_election_data(data_source)
-df = merge_dataframes(map_df, preds_df)
-
-conser = (df["incumbent_party"] == "conservative").sum()
-labour = (df["incumbent_party"] == "labour").sum()
-other_part = (df["incumbent_party"] == "other_parties").sum()
-lib_dem = (df["incumbent_party"] == "liberal_democrats").sum()
-
 
 ####################################################################
 ############_________Sliders sidebar goes here________##############
 
-# Streamlit app layout
-st.sidebar.title("UK, hun?")
 
 # Title for left sidebar
 st.sidebar.subheader("Pretty Little Sliders")
@@ -50,38 +23,53 @@ st.sidebar.subheader("Pretty Little Sliders")
 st.sidebar.text("Move the sliders to change \nthe polling percentages on the map")
 
 conservative_rating = st.sidebar.slider(
-    "Conservative Rating", min_value=0, max_value=100, value=0
+    "Conservative Rating", min_value=0, max_value=100, value=25
 )
 labor_party_rating = st.sidebar.slider(
-    "Labor Party Rating", min_value=0, max_value=100 - conservative_rating, value=0
+    "Labor Party Rating", min_value=0, max_value=100, value=44
 )
 libdem_party_rating = st.sidebar.slider(
     "Lib Dem Rating",
     min_value=0,
-    max_value=100 - (labor_party_rating + conservative_rating),
-    value=0,
+    max_value=100,
+    value=10,
 )
 other_party_rating = st.sidebar.slider(
     "Other Parties",
     min_value=0,
-    max_value=100 - (labor_party_rating + conservative_rating + libdem_party_rating),
-    value=0,
+    max_value=100,
+    value=21,
 )
-let_chaos_reign = st.sidebar.slider(
-    "Let Chaos Reign", min_value=0, max_value=100, value=50
-)
+
+params = {
+    "con_poll": conservative_rating / 100,
+    "lab_poll": labor_party_rating / 100,
+    "lib_poll": libdem_party_rating / 100,
+    "oth_poll": other_party_rating / 100,
+}
+
+
+#############################################################################
+###########################__Data goes here___###############################
+######################____BASE___MAP___DATA____##############################
+
+
+map_df = get_basemap(url)
+data_source = fetch_data_from_api(api_url, params=params, headers=None)
+preds = get_election_data(data_source)
+df = merge_dataframes(map_df, preds)
+
 
 # Display the current values of the sliders
 st.sidebar.text(f"Current Conservative Rating: {conservative_rating}%")
 st.sidebar.text(f"Current Labor Party Rating: {labor_party_rating}%")
 st.sidebar.text(f"Current Lib Dem Rating: {libdem_party_rating}%")
 st.sidebar.text(f"Current Other Parties Rating: {other_party_rating}%")
-st.sidebar.text(f"Current Chaos Rating: {let_chaos_reign}%")
 
 
 ####################################################################
 #############_________Map gets displayed here________###############
-
+brush = alt.selection(type="interval")
 
 map = (
     alt.Chart(df)
@@ -89,11 +77,11 @@ map = (
     .encode(
         x=alt.X("q").scale(zero=False).axis(None),
         y=alt.Y("r").scale(zero=False).axis(None),
-        color=colours_obj.legend(title="Incumbent Party", orient="bottom"),
+        color=colours_obj.legend(title="Winning Party", orient="bottom"),
         size=alt.value(65),
         tooltip=["n:N"],
     )
-    .properties(width=500, height=650)
+    .properties(width=450, height=540)
     .configure_axis(grid=False)
     .configure_view(strokeWidth=0)
 )
@@ -104,7 +92,7 @@ bar_ch = (
     .mark_bar()
     .encode(
         x=alt.X("count():Q", title="Total Count"),
-        y=alt.Y("incumbent_party:N", title="Incumbent Party", axis=None),
+        y=alt.Y("winning_party:N", title="Winning Party", axis=None),
         tooltip=[alt.Tooltip("count()")],
         color=colours_obj.legend(None),
     )

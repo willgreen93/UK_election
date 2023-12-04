@@ -6,10 +6,10 @@ from google.cloud import storage
 # data_source = "https://storage.googleapis.com/uk_election_model/elec_data_2019.csv"
 
 url = "interface/data/uk-constituencies-2019-BBC.hexjson"
-data_source = "interface/data/elec_data_2019.csv"
+api_url = "https://ukelection-image-ne4yelgixa-no.a.run.app/predict"
 
-parties = ["conservative", "labour", "liberal_democrats", "other_parties"]
-party_colours = ["#F78DA7", "blue", "orange", "lightgrey"]
+parties = ["con", "lab", "lib", "oth"]
+party_colours = ["blue", "red", "orange", "lightgrey"]
 colours_obj = alt.Color(
-    "incumbent_party:N", scale=alt.Scale(domain=parties, range=party_colours)
+    "winning_party:N", scale=alt.Scale(domain=parties, range=party_colours)
 )
