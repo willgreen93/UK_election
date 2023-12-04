@@ -1,45 +1,29 @@
 import altair as alt
 import altair_viewer
 import streamlit as st
-
-# import pydeck as pdk
-# import json
 import pandas as pd
-import random
 import geopandas as gpd
 import numpy as np
+from data_to_chart_prep import get_basemap, get_election_data
 
 ####################################################################
 ########################__Data goes here___#########################
 ###################____BASE___MAP___DATA____########################
 
-alt_data = pd.read_json(
-    "/home/asia/code/willgreen93/UK_election/interface/data/uk-constituencies-2019-BBC.hexjson"
-)
-alt_df = pd.DataFrame(alt_data)
-
-alt_df[["n", "r", "q", "region"]] = alt_df["hexes"].apply(
-    lambda x: pd.Series([x.get("n"), x.get("r"), x.get("q"), x.get("region")])
-)
-
-new_df = alt_df.rename_axis("constituency_id").reset_index().drop(columns=["hexes"])
+url = "data/uk-constituencies-2019-BBC.hexjson"
+new_df = get_basemap(url)
 
 ####################################################################
 ########################__Data goes here___#########################
 ###################____ELECTION_____DATA____########################
 
-results_2019 = pd.read_csv(
-    "/home/asia/code/willgreen93/UK_election/interface/data/elec_data_2019.csv"
-)
+data_source = "data/elec_data_2019.csv"
+preds_df = get_election_data(data_source)
 
+df = pd.merge(preds_df, new_df, on="constituency_id", how="left")
 
-basic_df = results_2019[
-    ["constituency_id", "constituency", "country", "incumbent_party"]
-]
-
-df = pd.merge(basic_df, new_df, on="constituency_id", how="left")
-
-##############_________Assigning Colors to each party________#############
+####################################################################
+###########_________Assigning Colors to each party________##########
 parties = ["conservative", "labour", "liberal_democrats", "other_parties"]
 party_colours = ["#F78DA7", "blue", "orange", "lightgrey"]
 colours_obj = alt.Color(
@@ -47,8 +31,8 @@ colours_obj = alt.Color(
 )
 
 
-#############################################
-####___Sliders sidebar goes here___##########
+####################################################################
+############_________Sliders sidebar goes here________##############
 
 # Streamlit app layout
 st.title("UK, hun?")
@@ -75,8 +59,8 @@ st.sidebar.text(f"Current Labor Party Rating: {labor_party_rating}%")
 st.sidebar.text(f"Current Chaos Rating: {let_chaos_reign}%")
 
 
-##########################################
-###########__Map goes here__###############
+####################################################################
+#############_________Map gets displayed here________###############
 st.altair_chart(
     alt.Chart(df)
     .mark_square()
@@ -85,10 +69,10 @@ st.altair_chart(
         x=alt.X("q").scale(zero=False).axis(None),
         y=alt.Y("r").scale(zero=False).axis(None),
         color=colours_obj,
-        size=alt.value(70),
+        size=alt.value(65),
         tooltip=["n:N"],
     )
-    .properties(width=550, height=650)
+    .properties(width=555, height=650)
     .configure_axis(grid=False)
     .configure_view(strokeWidth=0)
 )
