@@ -88,6 +88,7 @@ def main():
 
     # Evaluate the model
 
+    print("BRAVO!! YOU DESERVE A CANDY \U0001F601")
     return preprocessed_final_df
 
 
