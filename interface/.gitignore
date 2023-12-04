@@ -1,4 +1,6 @@
-/data_archive
-/cache
-/notebook_archive
-/data
+
+.streamlit/secrets.toml
+data
+cache
+notebook_archive
+data_archive
