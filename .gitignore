@@ -4,7 +4,7 @@ raw_data/
 .DS_Store
 notebooks/
 __pycache__/
-
+google.json
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
