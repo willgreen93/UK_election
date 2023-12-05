@@ -6,6 +6,5 @@ altair
 geopandas
 numpy
 pandas
-json
 
 #Other requirements
