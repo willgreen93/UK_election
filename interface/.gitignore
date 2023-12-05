@@ -1,6 +1,2 @@
 
 .streamlit/secrets.toml
-data
-cache
-notebook_archive
-data_archive
