@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 import geopandas as gpd
 import numpy as np
-from data_to_chart_prep import get_basemap, get_election_data
+from data_to_chart_prep import get_basemap, get_election_data, merge_dataframes
 from params import *
 
 #############################################################################
@@ -12,9 +12,7 @@ from params import *
 
 map_df = get_basemap(url)
 preds_df = get_election_data(data_source)
-
-df = pd.merge(preds_df, map_df, on="constituency_id", how="left")
-
+df = merge_dataframes(map_df, preds_df)
 
 ####################################################################
 ############_________Sliders sidebar goes here________##############
@@ -61,7 +59,9 @@ st.altair_chart(
     .encode(
         x=alt.X("q").scale(zero=False).axis(None),
         y=alt.Y("r").scale(zero=False).axis(None),
-        color=colours_obj.legend(title="Incumbent Party",),
+        color=colours_obj.legend(
+            title="Incumbent Party",
+        ),
         size=alt.value(65),
         tooltip=["n:N"],
     )
