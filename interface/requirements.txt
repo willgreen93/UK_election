@@ -2,7 +2,6 @@
 streamlit
 altair
 
-
 #Data requirements
 geopandas
 numpy
