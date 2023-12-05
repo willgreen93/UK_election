@@ -1,6 +1,6 @@
 import pandas as pd
-from uk_election.params import LOCAL_DATA_PATH
 import os
+from uk_election.params import *
 from uk_election.data.google import load_data_from_gcp
 from uk_election.preprocessing.preprocessing import (
     preprocess_general_election_results,
@@ -10,8 +10,15 @@ from uk_election.preprocessing.preprocessing import (
     preprocess_census_livingstatus,
     interpolate_data_frame,
 )
-# import logging
+from uk_election.ml_logic.model import (
+    make_melted_df,
+    prep_data,
+    train_model,
+    prep_new_data,
+    model_predict,
+)
 
+# import logging
 # logging.basicConfig(level=logging.DEBUG)
 
 
@@ -87,14 +94,10 @@ def preprocess():
         os.path.join(LOCAL_DATA_PATH, "preprocessed_final_df.csv"), index=False
     )
 
-    # Train the model
-
-    # Evaluate the model
-
     print(
         f"""
-          BRAVO, PREPROCESSED COMPLETED 🎉🎉🎉🎉🎉🎉🎉🎉
-          The file has been saved here:
+          Preprocessed completed
+          For courtesy, we saved the file locally at:
           {os.path.join(LOCAL_DATA_PATH, "preprocessed_final_df.csv")}
           """
     )
@@ -102,8 +105,44 @@ def preprocess():
     # logging.info("Preprocessing completed")
     # logging.warning("Preprocessing completed")
     # logging.error("Preprocessing completed")
+
     return preprocessed_final_df
 
 
+def main():
+    # Step 1: Preprocess the data
+    preprocessed_df = preprocess()
+    # Step 2: Reorient the DF so votes for each party become rows
+    melted_df = make_melted_df(preprocessed_df)
+    # Step 3: Prepare the data for the model
+    X_old_encoded, y_old = prep_data(melted_df)
+    # Step 4: Train the model
+    model = train_model(X_old_encoded, y_old)
+
+    # Step 5: Prepare the new data for prediction
+    X_new_encoded = prep_new_data(melted_df, (0.25, 0.44, 0.1, 0.21))
+    # Step 6: Predict
+    prediction = model_predict(model, X_new_encoded, melted_df)
+
+    # HURRAY! 🎉🎉🎉🎉🎉🎉🎉🎉
+    print(
+        f"""
+          PREDICTED 🎉🎉🎉🎉🎉🎉🎉🎉 This is a sample of the prediction:
+          {prediction.head()}
+          """
+    )
+
+
+def load_model():
+    preprocessed_df = preprocess()
+    # Step 2: Reorient the DF so votes for each party become rows
+    melted_df = make_melted_df(preprocessed_df)
+    # Step 3: Prepare the data for the model
+    X_old_encoded, y_old = prep_data(melted_df)
+    # Step 4: Train the model
+    model = train_model(X_old_encoded, y_old)
+    return model, melted_df
+
+
 if __name__ == "__main__":
-    preprocess()
+    main()
