@@ -1,8 +1,8 @@
 import pandas as pd
-from params import LOCAL_DATA_PATH
+from uk_election.params import LOCAL_DATA_PATH
 import os
-from data.google import load_data_from_gcp
-from preprocessing.preprocessing import (
+from uk_election.data.google import load_data_from_gcp
+from uk_election.preprocessing.preprocessing import (
     preprocess_general_election_results,
     preprocess_polling_data,
     preprocess_census_age,
@@ -10,9 +10,12 @@ from preprocessing.preprocessing import (
     preprocess_census_livingstatus,
     interpolate_data_frame,
 )
+# import logging
+
+# logging.basicConfig(level=logging.DEBUG)
 
 
-def main():
+def preprocess():
     # Step 1: Download from GCP
     load_data_from_gcp()
 
@@ -88,8 +91,19 @@ def main():
 
     # Evaluate the model
 
+    print(
+        f"""
+          BRAVO, PREPROCESSED COMPLETED 🎉🎉🎉🎉🎉🎉🎉🎉
+          The file has been saved here:
+          {os.path.join(LOCAL_DATA_PATH, "preprocessed_final_df.csv")}
+          """
+    )
+
+    # logging.info("Preprocessing completed")
+    # logging.warning("Preprocessing completed")
+    # logging.error("Preprocessing completed")
     return preprocessed_final_df
 
 
 if __name__ == "__main__":
-    main()
+    preprocess()
