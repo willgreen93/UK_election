@@ -1,9 +1,29 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.model_selection import GridSearchCV
 
-df =  pd.read_csv("/home/willgreen93/code/willgreen93/UK_election/notebooks/modelling/final_df.csv")
-print(df.head(5))
+preprocessed_data = pd.read_csv('/home/willgreen93/code/willgreen93/UK_election/uk_election/preprocessing/preprocessed_final_df.csv')
 
+def make_melted_df(preprocessed_data):
+    preprocessed_data.drop(preprocessed_data.columns[0], axis=1, inplace=True)
+
+    preprocessed_data['con_pre_ge_adjusted'] = preprocessed_data['con_share_prev']/preprocessed_data['mean_con_share_ge']*preprocessed_data['con_pre_ge_poll']
+    preprocessed_data['lab_pre_ge_adjusted'] = preprocessed_data['lab_share_prev']/preprocessed_data['mean_lab_share_ge']*preprocessed_data['lab_pre_ge_poll']
+    preprocessed_data['lib_pre_ge_adjusted'] = preprocessed_data['lib_share_prev']/preprocessed_data['mean_lib_share_ge']*preprocessed_data['lib_pre_ge_poll']
+    preprocessed_data['oth_pre_ge_adjusted'] = preprocessed_data['oth_share_prev']/preprocessed_data['mean_oth_share_ge']*preprocessed_data['oth_pre_ge_poll']
+
+    melted_df = pd.melt(preprocessed_data, id_vars=['constituency_id', 'year', 'Private_renters', 'Social_renters', #'Home_owners',
+                                   '0-9', '10-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', #'80+',
+                                   'White', 'Asian', 'Black', 'Mixed', #'Other',
+                                   'con_pre_ge_adjusted', 'lab_pre_ge_adjusted', 'lib_pre_ge_adjusted', 'oth_pre_ge_adjusted',
+                                   'con_share_prev','mean_con_share_ge', 'lab_share_prev','mean_lab_share_ge', 'lib_share_prev','mean_lib_share_ge', 'oth_share_prev', 'mean_oth_share_ge'],
+                    value_vars=['con_votes', 'lab_votes', 'lib_votes', 'oth_votes'],
+                    var_name='party', value_name='votes')
+
+    return melted_df
+
+melted_df = make_melted_df(preprocessed_data)
 
 def prep_data(melted_df):
     columns_to_drop = ["year", "constituency_id", "votes", 'con_share_prev','mean_con_share_ge', 'lab_share_prev','mean_lab_share_ge', 'lib_share_prev','mean_lib_share_ge', 'oth_share_prev', 'mean_oth_share_ge']
@@ -18,10 +38,7 @@ def prep_data(melted_df):
 
     return X_old_encoded, y_old
 
-X_old_encoded, y_old = prep_data(df)
-
-from sklearn.ensemble import GradientBoostingRegressor
-from sklearn.model_selection import GridSearchCV
+X_old_encoded, y_old = prep_data(melted_df)
 
 def optimise_model(X_old_encoded, y_old):
     gb_regressor = GradientBoostingRegressor()
@@ -61,7 +78,7 @@ def prep_new_data(melted_df, con_lab_lib_oth_support):
 
     return X_new_encoded
 
-X_new_encoded = prep_new_data(df, (0.25, 0.44, 0.1, 0.21))
+X_new_encoded = prep_new_data(melted_df, (0.25, 0.44, 0.1, 0.21))
 
 def model_predict(model, X_new_encoded, melted_df) :
     X_new = melted_df[melted_df['year'] == 2024]
@@ -78,4 +95,4 @@ def model_predict(model, X_new_encoded, melted_df) :
 
     return output
 
-print(model_predict(model, X_new_encoded, df))
+print(model_predict(model, X_new_encoded, melted_df))
