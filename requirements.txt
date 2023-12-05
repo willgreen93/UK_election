@@ -5,3 +5,6 @@ numpy
 ipykernel
 scipy
 google-cloud-storage
+scikit-learn
+fastapi
+uvicorn
