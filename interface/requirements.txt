@@ -8,3 +8,4 @@ numpy
 pandas
 
 #Other requirements
+google-cloud-storage
