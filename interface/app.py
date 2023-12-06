@@ -8,7 +8,7 @@ from data_to_chart_prep import (
     get_election_data,
     merge_dataframes,
     fetch_data_from_api,
-    add_scotland_ni_data
+    add_scotland_ni_data,
 )
 from params import *
 from io import BytesIO
@@ -16,7 +16,7 @@ from io import BytesIO
 ####################################################################
 ############_________Sliders sidebar goes here________##############
 
-col1, col2 = st.columns(2)
+col1, col2 = st.columns([2, 1], gap="small")
 
 # Title for left sidebar
 st.sidebar.subheader("2024 UK Elections Predictor")
@@ -72,11 +72,10 @@ max_winning_party_index = parties.index(max_winning_party)
 party_full_name = parties_full[max_winning_party_index]
 
 # Display the current values of the sliders
-
-st.sidebar.text(f"Conservative Party Rating: {conservative_rating}%")
-st.sidebar.text(f"Labor Party Rating: {labor_party_rating}%")
-st.sidebar.text(f"Lib Dem Party Rating: {libdem_party_rating}%")
-st.sidebar.text(f"Other Parties Rating: {other_party_rating}%")
+st.sidebar.markdown(f"""Conservative Party Rating: {conservative_rating}%""")
+st.sidebar.markdown(f"""Labor Party Rating: {labor_party_rating}%""")
+st.sidebar.markdown(f"""Lib Dem Party Rating: {libdem_party_rating}%""")
+st.sidebar.markdown(f"""Other Parties Rating: {other_party_rating}%""")
 
 
 ####################################################################
@@ -89,24 +88,25 @@ map = (
     .encode(
         x=alt.X("q").scale(zero=False).axis(None),
         y=alt.Y("r").scale(zero=False).axis(None),
-        color=colours_obj.legend(title="Legend", orient="bottom"),
+        color=colours_obj.legend(None),
         size=alt.value(65),
         tooltip=["n:N"],
     )
-    .properties(width=450, height=540)
+    .properties(width=440, height=540)
     .configure_axis(grid=False)
     .configure_view(strokeWidth=0)
 )
-
 
 bar_ch = (
     alt.Chart(df)
     .mark_bar()
     .encode(
         x=alt.X("count():Q", title="Total Count"),
-        y=alt.Y("winning_party:N", title="Winning Party", axis=None),
-        tooltip=[alt.Tooltip("count()")],
-        color=colours_obj.legend(None),
+        y=alt.Y("winning_party:N", title="Winning Party", axis=None, sort="-x"),
+        tooltip=[
+            alt.Tooltip("winning_party:N"),
+        ],
+        color=colours_obj.legend(title="Legend", orient="bottom"),
     )
     .properties(
         title="Constituencies Won",
