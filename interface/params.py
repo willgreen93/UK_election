@@ -2,7 +2,7 @@ import altair as alt
 from google.cloud import storage
 
 
-url = "interface/data/uk-constituencies-2019-BBC.hexjson"
+url = "https://storage.googleapis.com/uk_election_model/uk-constituencies-2019-BBC.hexjson"
 api_url = "https://ukelection-image-ne4yelgixa-no.a.run.app/predict"
 extra_cols = "https://storage.googleapis.com/uk_election_model/Scotland_NI_results.csv"
 
@@ -23,7 +23,7 @@ colours_obj = alt.Color(
 )
 parties_full = [
     "Conservative Party",
-    "Labor Party",
+    "Labour Party",
     "Liberal Democratic Party",
     "Other Parties",
 ]
