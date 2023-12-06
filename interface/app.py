@@ -8,6 +8,7 @@ from data_to_chart_prep import (
     get_election_data,
     merge_dataframes,
     fetch_data_from_api,
+    add_scotland_ni_data
 )
 from params import *
 from io import BytesIO
@@ -58,9 +59,10 @@ params = {
 
 
 map_df = get_basemap(url)
+scotni_df = add_scotland_ni_data(extra_cols)
 data_source = fetch_data_from_api(api_url, params=params, headers=None)
-preds = get_election_data(data_source)
-df = merge_dataframes(map_df, preds)
+pred_df = get_election_data(data_source)
+df = merge_dataframes(scotni_df, pred_df, map_df)
 
 #############################################################################
 #######################__shortcut to full text___############################
