@@ -1,11 +1,20 @@
 from google.cloud import storage
 from uk_election.params import LOCAL_DATA_PATH, GCP_PROJECT, BUCKET_NAME
 import os
+import asyncio
+
+from prefect_gcp import GcpCredentials
+from google.cloud import storage
 
 
-def load_data_from_gcp():
+async def load_google_credentials():
+    gcp_credentials = await GcpCredentials.load("uk-elections")
+    return gcp_credentials.get_cloud_storage_client(BUCKET_NAME)
+
+
+async def load_data_from_gcp():
     os.makedirs(LOCAL_DATA_PATH, exist_ok=True)
-    client = storage.Client(project=GCP_PROJECT)
+    client = await load_google_credentials()
     bucket = client.bucket(BUCKET_NAME)
     files = bucket.list_blobs()
     file_names = [file.name for file in files]
@@ -15,4 +24,4 @@ def load_data_from_gcp():
 
 
 if __name__ == "__main__":
-    load_data_from_gcp()
+    asyncio.run(load_data_from_gcp())

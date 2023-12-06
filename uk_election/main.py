@@ -2,6 +2,7 @@ import pandas as pd
 import os
 from uk_election.params import *
 from uk_election.data.google import load_data_from_gcp
+import asyncio
 from uk_election.preprocessing.preprocessing import (
     preprocess_general_election_results,
     preprocess_polling_data,
@@ -22,9 +23,9 @@ from uk_election.ml_logic.model import (
 # logging.basicConfig(level=logging.DEBUG)
 
 
-def preprocess():
+async def preprocess():
     # Step 1: Download from GCP
-    load_data_from_gcp()
+    await load_data_from_gcp()
 
     # Step 2: Import the data as DFs
     elections_df = pd.read_csv(
@@ -109,9 +110,9 @@ def preprocess():
     return preprocessed_final_df
 
 
-def main():
+async def main():
     # Step 1: Preprocess the data
-    preprocessed_df = preprocess()
+    preprocessed_df = await preprocess()
     # Step 2: Reorient the DF so votes for each party become rows
     melted_df = make_melted_df(preprocessed_df)
     # Step 3: Prepare the data for the model
@@ -133,8 +134,8 @@ def main():
     )
 
 
-def load_model():
-    preprocessed_df = preprocess()
+async def load_model():
+    preprocessed_df = await preprocess()
     # Step 2: Reorient the DF so votes for each party become rows
     melted_df = make_melted_df(preprocessed_df)
     # Step 3: Prepare the data for the model
@@ -145,4 +146,4 @@ def load_model():
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
