@@ -22,8 +22,8 @@ col1, col2 = st.columns([2, 1], gap="small")
 st.sidebar.subheader("2024 UK Elections Predictor")
 
 # Title for the sliders
-st.sidebar.text(
-    "See how changes in polling \npercentages can affect\nthe outcome of the next election"
+st.sidebar.markdown(
+    """See how changes in polling \npercentages can affect\nthe outcome of the next election"""
 )
 
 conservative_rating = st.sidebar.slider(
