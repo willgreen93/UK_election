@@ -4,6 +4,7 @@ from google.cloud import storage
 
 url = "interface/data/uk-constituencies-2019-BBC.hexjson"
 api_url = "https://ukelection-image-ne4yelgixa-no.a.run.app/predict"
+extra_cols = "https://storage.googleapis.com/uk_election_model/Scotland_NI_results.csv"
 
 parties = ["con", "lab", "lib", "oth"]
 party_colours = ["blue", "red", "orange", "lightgrey"]

@@ -37,16 +37,22 @@ def get_election_data(data_source):
     constituency_id, constituency, country, incumbent_party
     """
     preds = pd.DataFrame(data_source)
-    # preds_df = preds[["constituency_id", "winning_party"]]
-
     return preds
 
+def add_scotland_ni_data(extra_cols):
+    """
+    This add the static data for Scotland and NI constituencies
+    """
+    scotni_data = pd.read_csv(extra_cols)
+    scotni_df = pd.DataFrame(scotni_data)
+    return scotni_df
 
-def merge_dataframes(basic_df, new_df):
+def merge_dataframes(basic_df, scotni_df, new_df):
     """
     This function takes the basic_df and new_df and returns a dataframe
     with the election data. The dataframe has the following columns:
     constituency_id, constituency, country, incumbent_party, n, r, q, region
     """
+    base_df = pd.concat
     df = pd.merge(basic_df, new_df, on="constituency_id", how="left")
     return df
