@@ -60,6 +60,7 @@ def merge_dataframes(scotni_df=None, pred_df=None, map_df=None):
     constituency_id, constituency, country, incumbent_party, n, r, q, region
     """
     base_df = pd.concat([scotni_df, pred_df], ignore_index=True)
-
+    base_df["winning_party"] = base_df["winning_party"].str.lower()
     df = pd.merge(map_df, base_df, on="constituency_id", how="left")
+
     return df
