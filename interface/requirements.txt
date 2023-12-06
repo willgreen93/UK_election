@@ -10,3 +10,4 @@ pandas
 
 #Other requirements
 google-cloud-storage
+requests

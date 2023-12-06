@@ -18,10 +18,12 @@ from io import BytesIO
 col1, col2 = st.columns(2)
 
 # Title for left sidebar
-st.sidebar.subheader("Pretty Little Sliders")
+st.sidebar.subheader("2024 UK Elections Predictor")
 
 # Title for the sliders
-st.sidebar.text("Move the sliders to change \nthe polling percentages on the map")
+st.sidebar.text(
+    "See how changes in polling \npercentages can affect\nthe outcome of the next election"
+)
 
 conservative_rating = st.sidebar.slider(
     "Conservative Rating", min_value=0, max_value=100, value=25
@@ -60,21 +62,24 @@ data_source = fetch_data_from_api(api_url, params=params, headers=None)
 preds = get_election_data(data_source)
 df = merge_dataframes(map_df, preds)
 
+#############################################################################
+#######################__shortcut to full text___############################
 party_counts = df["winning_party"].value_counts()
 max_winning_party = party_counts.idxmax()
-
+max_winning_party_index = parties.index(max_winning_party)
+party_full_name = parties_full[max_winning_party_index]
 
 # Display the current values of the sliders
-st.sidebar.subheader(f"Party with most seats: {max_winning_party}")
-st.sidebar.text(f"Current Conservative Rating: {conservative_rating}%")
-st.sidebar.text(f"Current Labor Party Rating: {labor_party_rating}%")
-st.sidebar.text(f"Current Lib Dem Rating: {libdem_party_rating}%")
-st.sidebar.text(f"Current Other Parties Rating: {other_party_rating}%")
+
+st.sidebar.text(f"Conservative Party Rating: {conservative_rating}%")
+st.sidebar.text(f"Labor Party Rating: {labor_party_rating}%")
+st.sidebar.text(f"Lib Dem Party Rating: {libdem_party_rating}%")
+st.sidebar.text(f"Other Parties Rating: {other_party_rating}%")
 
 
 ####################################################################
 #############_________Map gets displayed here________###############
-brush = alt.selection(type="interval")
+# brush = alt.selection(type="interval")
 
 map = (
     alt.Chart(df)
@@ -82,7 +87,7 @@ map = (
     .encode(
         x=alt.X("q").scale(zero=False).axis(None),
         y=alt.Y("r").scale(zero=False).axis(None),
-        color=colours_obj.legend(title="Winning Party", orient="bottom"),
+        color=colours_obj.legend(title="Legend", orient="bottom"),
         size=alt.value(65),
         tooltip=["n:N"],
     )
@@ -107,16 +112,19 @@ bar_ch = (
     )
 )
 
-
-# st.altair_chart(map)
-# st.altair_chart(bar_ch)
-
 ######################################################
-
 
 with col1:
     st.header("UK, hun?")
     st.altair_chart(map)
 
+
 with col2:
     st.altair_chart(bar_ch)
+
+st.markdown(
+    f"""
+    Based on the polling percentages you've chosen, we predict that
+    the **{party_full_name}** will win in **{party_counts.max()}** constituencies.
+    """
+)
