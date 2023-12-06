@@ -4,10 +4,16 @@ from uk_election.ml_logic.model import (
     prep_new_data,
     model_predict,
 )
+import asyncio
 
 
 app = FastAPI()
-app.state.model = load_model()
+# app.state.model = asyncio.run(load_model())
+
+
+@app.on_event("startup")
+async def startup_event():
+    app.state.model = await load_model()
 
 
 @app.get("/")

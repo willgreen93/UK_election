@@ -3,8 +3,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.model_selection import GridSearchCV
 
-# preprocessed_data = pd.read_csv('/home/willgreen93/code/willgreen93/UK_election/uk_election/preprocessing/preprocessed_final_df.csv')
-
 
 def make_melted_df(preprocessed_data):
     """
@@ -73,9 +71,6 @@ def make_melted_df(preprocessed_data):
     return melted_df
 
 
-# melted_df = make_melted_df(preprocessed_data)
-
-
 def prep_data(melted_df):
     """
     This function takes the melted dataframe and returns the X and y dataframes for the model
@@ -105,15 +100,13 @@ def prep_data(melted_df):
     return X_old_encoded, y_old
 
 
-# X_old_encoded, y_old = prep_data(melted_df)
-
-
 def train_model(X_old_encoded, y_old):
     """
     This function takes the X and y dataframes and returns the optimised trained model
     """
     gb_regressor = GradientBoostingRegressor()
 
+    # Already picked the best ones, if you want to run the grid search remove the comments
     param_grid = {
         "n_estimators": [60],  # , 100, 140],
         "learning_rate": [0.1],  # , 0.5, 1],
@@ -134,9 +127,6 @@ def train_model(X_old_encoded, y_old):
     print("Best Score:", grid_search_tree.best_score_)
 
     return best_model_gb
-
-
-# model = optimise_model(X_old_encoded, y_old)
 
 
 def prep_new_data(melted_df, con_lab_lib_oth_support):
@@ -192,9 +182,6 @@ def prep_new_data(melted_df, con_lab_lib_oth_support):
     return X_new_encoded
 
 
-# X_new_encoded = prep_new_data(melted_df, (0.25, 0.44, 0.1, 0.21))
-
-
 def model_predict(model, X_new_encoded, melted_df):
     """
     This function takes the model and the X dataframe for the new data and returns the predicted results
@@ -216,6 +203,3 @@ def model_predict(model, X_new_encoded, melted_df):
     output["winning_party"] = output["winning_party"].str.replace("_votes", "")
 
     return output
-
-
-# print(model_predict(model, X_new_encoded, melted_df))
