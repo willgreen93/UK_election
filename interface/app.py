@@ -15,11 +15,11 @@ from io import BytesIO
 
 ####################################################################
 ############_________Sliders sidebar goes here________##############
-
-col1, col2 = st.columns([2, 1], gap="small")
+st.set_page_config(layout="wide")
+col1, col2 = st.columns([0.5, 0.5], gap="small")
 
 # Title for left sidebar
-st.sidebar.subheader("2024 UK Elections Predictor")
+st.sidebar.subheader("Predictions for England and Wales")
 
 # Title for the sliders
 st.sidebar.markdown(
@@ -72,11 +72,18 @@ max_winning_party_index = parties.index(max_winning_party)
 party_full_name = parties_full[max_winning_party_index]
 
 # Display the current values of the sliders
-st.sidebar.markdown(f"""Conservative Party Rating: {conservative_rating}%""")
-st.sidebar.markdown(f"""Labor Party Rating: {labor_party_rating}%""")
-st.sidebar.markdown(f"""Lib Dem Party Rating: {libdem_party_rating}%""")
-st.sidebar.markdown(f"""Other Parties Rating: {other_party_rating}%""")
 
+party_text = f"""
+Conservative Party Rating: {conservative_rating}%
+
+Labor Party Rating: {labor_party_rating}%
+
+Lib Dem Party Rating: {libdem_party_rating}%
+
+Other Parties Rating: {other_party_rating}%
+"""
+
+st.sidebar.markdown(party_text)
 
 ####################################################################
 #############_________Map gets displayed here________###############
@@ -106,7 +113,13 @@ bar_ch = (
         tooltip=[
             alt.Tooltip("winning_party:N"),
         ],
-        color=colours_obj.legend(title="Legend", orient="bottom"),
+        color=colours_obj.legend(
+            title="Legend",
+            orient="bottom",
+            columns=5,
+            fillColor="white",
+            direction="vertical",
+        ),
     )
     .properties(
         title="Constituencies Won",
@@ -117,16 +130,20 @@ bar_ch = (
 ######################################################
 
 with col1:
-    st.header("UK, hun?")
+    st.subheader("2024 UK Elections Predicor")
     st.altair_chart(map)
 
 
 with col2:
+    st.header(" ")
     st.altair_chart(bar_ch)
 
 st.markdown(
     f"""
     Based on the polling percentages you've chosen, we predict that
     the **{party_full_name}** will win in **{party_counts.max()}** constituencies.
+
+
+    Scotland and NI are not included in this prediction, and are displayed with 2019 results.
     """
 )
