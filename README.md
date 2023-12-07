@@ -39,7 +39,3 @@ The user interface allows users to toggle pre-election poll to infer the impact 
 
 
 You can test the interface [here](https://uk-elec.streamlit.app/).
-
-
-
-# How I replicate the work?
