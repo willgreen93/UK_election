@@ -23,7 +23,12 @@ colours_obj = alt.Color(
 )
 parties_full = [
     "Conservative Party",
-    "Labor Party",
+    "Labour Party",
     "Liberal Democratic Party",
     "Other Parties",
 ]
+
+sidebar_title = """Predictions for England and Wales"""
+app_sidebar_description = """See how changes in polling \npercentages can affect \nthe outcome of the next election."""
+disclaimer = """Scotland and Northern Ireland are not included in this prediction, and are displayed with 2019 results.
+"""
