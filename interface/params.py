@@ -30,5 +30,5 @@ parties_full = [
 
 sidebar_title = """Predictions for England and Wales"""
 app_sidebar_description = """See how changes in polling \npercentages can affect \nthe outcome of the next election."""
-disclaimer = """Scotland and Northern Ireland are not included in this prediction, and are displayed with 2019 results.
+disclaimer = """_Scotland and Northern Ireland are not included in this prediction, and are displayed with 2019 results._
 """

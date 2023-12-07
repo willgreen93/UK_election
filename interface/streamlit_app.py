@@ -169,6 +169,8 @@ option = st.selectbox(
     options=df["n"],
 )
 
+col3, col4 = st.columns([0.5, 0.5], gap="small")
+
 
 # Pick the value we need
 selection_df = df_selection_dropbox(df, option)
@@ -181,16 +183,29 @@ selection_df["Predicted Percentage"] = (
     selection_df["Predicted Votes"] / selection_df["Predicted Votes"].sum()
 ) * 100
 # Format votes with commas (1,000) and then format % as percentages
-selection_df["Predicted Votes"] = selection_df["Predicted Votes"].apply(
+formatted_df = selection_df.copy()
+formatted_df["Predicted Votes"] = selection_df["Predicted Votes"].apply(
     "{:,.0f}".format
 )
-selection_df["Predicted Percentage"] = selection_df["Predicted Percentage"].apply(
+formatted_df["Predicted Percentage"] = formatted_df["Predicted Percentage"].apply(
     "{:.1f}%".format
 )
 # Apply colors to the DF
-colored_df = selection_df.style.apply(color_party, axis=1)
+colored_df = formatted_df.style.apply(color_party, axis=1)
 colored_contrast_df = colored_df.applymap(
     lambda x: "color:black" if x else "color:black;"
 )
 
-st.dataframe(colored_contrast_df, hide_index=True)
+
+con_winning_party_row = selection_df.loc[selection_df["Predicted Votes"].idxmax()]
+
+with col3:
+    st.dataframe(colored_contrast_df, hide_index=True)
+
+dropbox_selection_summary = f"""
+    You have chosen **{option}**, which is predicted to be won by the **{con_winning_party_row['Party']}**
+    with **{con_winning_party_row['Predicted Votes']:,}** votes or ({con_winning_party_row['Predicted Percentage']:.2f}%).
+    """
+
+with col4:
+    st.markdown(dropbox_selection_summary)
