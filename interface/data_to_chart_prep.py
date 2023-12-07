@@ -65,3 +65,29 @@ def merge_dataframes(scotni_df=None, pred_df=None, map_df=None):
 
     return df
 
+
+def df_selection_dropbox(df, option):
+    """
+    Selects the dataframe for the dropdown selection
+    """
+    selection_df = df[df["n"] == option][
+        ["n", "con_votes", "lab_votes", "lib_votes", "oth_votes"]
+    ].set_index("n")
+    return selection_df
+
+
+def color_party(data):
+    """
+    This colors the parties in the dataframe for the dropdown selection
+    """
+    if data.Party == "Conservative":
+        color = "#0087DC"
+    elif data.Party == "Labour":
+        color = "#dc143c"
+    elif data.Party == "Lib Dem":
+        color = "#FAA61A"
+    elif data.Party == "Other":
+        color = "#005B54"
+    else:
+        color = "black"
+    return [f"background-color: {color}"] * len(data)

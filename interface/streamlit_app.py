@@ -9,6 +9,8 @@ from data_to_chart_prep import (
     merge_dataframes,
     fetch_data_from_api,
     add_scotland_ni_data,
+    color_party,
+    df_selection_dropbox,
 )
 from params import *
 from io import BytesIO
@@ -45,6 +47,11 @@ params = {
     "lib_poll": libdem_party_rating / 100,
     "oth_poll": other_party_rating / 100,
 }
+
+total_params = sum(params.values())
+if total_params > 1:
+    st.sidebar.error("The sum of all values must be lower than 100%. Please try again.")
+    st.stop()
 
 st.sidebar.markdown(disclaimer)
 #############################################################################
@@ -127,7 +134,8 @@ bar_ch = (
     )
 )
 
-######################################################
+###############################################################################
+##########_________Displaying info into two columns and below________###########
 
 with col1:
     st.altair_chart(map)
@@ -145,64 +153,44 @@ st.markdown(
 )
 st.divider()
 
-##### Constituency Selector #####
 
-st.markdown("## Constituency Selector")
+###############################################################################
+#####################_________CONSTITUENCY SELECTOR________####################
 
-
+st.subheader("Constituency Selector")
+st.markdown(
+    """
+    Use the dropdown menu below to select a constituency and see the predicted breakdown of votes.
+    """
+)
 # Select the constituency
 option = st.selectbox(
-    label="Pick the constituency you want to investigate",
+    label="Select a constituency",
     options=df["n"],
 )
 
 
-# Transfor the DF (this can be packed in a function)
 # Pick the value we need
-selection_df = df[df["n"] == option][
-    ["n", "con_votes", "lab_votes", "lib_votes", "oth_votes"]
-].set_index("n")
-# Rename columns
+selection_df = df_selection_dropbox(df, option)
+
+# Rename columns, transpose, set column names to votes, and add percentage column
 selection_df.columns = ["Conservative", "Labour", "Lib Dem", "Other"]
-# Transpose to make colum,ns as rows
 selection_df = selection_df.T.reset_index()
-# Set column name to Votes
 selection_df.columns = ["Party", "Predicted Votes"]
-# Add percentage column
-# Add a new column 'Percentage' with the share of votes
 selection_df["Predicted Percentage"] = (
     selection_df["Predicted Votes"] / selection_df["Predicted Votes"].sum()
 ) * 100
-# Format votes with commas (1,000)
+# Format votes with commas (1,000) and then format % as percentages
 selection_df["Predicted Votes"] = selection_df["Predicted Votes"].apply(
     "{:,.0f}".format
 )
-# Format % as percentage (43.2%)
 selection_df["Predicted Percentage"] = selection_df["Predicted Percentage"].apply(
     "{:.1f}%".format
 )
-
-
-# Define color party function
-def color_party(data):
-    if data.Party == "Conservative":
-        color = "#0087DC"
-    elif data.Party == "Labour":
-        color = "#dc143c"
-    elif data.Party == "Lib Dem":
-        color = "#FAA61A"
-    elif data.Party == "Other":
-        color = "#005B54"
-    else:
-        color = "black"
-    return [f"background-color: {color}"] * len(data)
-
-
 # Apply colors to the DF
 colored_df = selection_df.style.apply(color_party, axis=1)
 colored_contrast_df = colored_df.applymap(
     lambda x: "color:black" if x else "color:black;"
 )
-
 
 st.dataframe(colored_contrast_df, hide_index=True)
