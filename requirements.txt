@@ -9,3 +9,8 @@ scikit-learn
 fastapi
 uvicorn
 prefect_gcp
+altair
+streamlit
+geopandas
+numpy
+requests
