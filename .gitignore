@@ -5,9 +5,10 @@ raw_data/
 
 interface/data
 .streamlit/secrets.toml
+interface/how_to.ipynb
 notebooks/
-__pycache__/
 google.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
