@@ -1,5 +1,5 @@
 # TL;DR
-<ins>Check our app [here](https://uk-elec.streamlit.app/), and forecast 2024 UK general election results!</ins>
+<ins>Check our app [here](https://uk-election.streamlit.app/), and forecast 2024 UK general election results!</ins>
 
 
 
@@ -38,4 +38,4 @@ The user interface was created using `streamlit` package; the UK map was created
 The user interface allows users to toggle pre-election poll to infer the impact on results at the consituency and national level.
 
 
-You can test the interface [here](https://uk-election.streamlit.app/)
+You can use the interface [here](https://uk-election.streamlit.app/)
