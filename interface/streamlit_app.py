@@ -151,6 +151,17 @@ st.markdown(
     the **{party_full_name}** will win in **{party_counts.max()}** constituencies, with **{party_counts.max()/party_counts.sum()*100:.2f}%** of the vote,
     followed by the **{second_party_full_name}** with **{party_counts[second_winning_party]}** constituencies with **{second_winning_party_count/party_counts.sum()*100:.2f}%** of the vote."""
 )
+
+
+# Create a download button
+download_button = st.download_button(
+    label="Download Predictions",
+    data=df.to_csv(index=False),
+    file_name="prediction.csv",
+    key="download_button",
+)
+
+
 st.divider()
 
 
